@@ -24,17 +24,12 @@ retry_pip_install() {
     done
 }
 
-# Update and upgrade system packages
 sudo apt clean
 sudo update-initramfs -u -k all
 sudo dpkg --configure -a
 sudo apt update -y
-
-# Install necessary dependencies
 sudo apt install -y chromium-browser chromium-chromedriver sox libsox-fmt-all portaudio19-dev espeak-ng --fix-missing
 sudo apt install -y xterm libcap-dev --fix-missing
-
-# Verify installations
 chromium-browser --version
 chromedriver --version
 sox --version
@@ -49,21 +44,16 @@ else
     exit 1
 fi
 
-# Fix permissions
 sudo chown -R $(id -u):$(id -g) .venv/
 
 # Remove system-wide installations to avoid conflicts
 echo "Removing system-wide installations of simplejpeg and picamera2..."
 sudo apt remove -y python3-simplejpeg python3-picamera2 || true
 
-# Ensure the latest version of pip is installed
 pip install --upgrade pip
 
-# **Force clean installation of NumPy, simplejpeg, and picamera2 to prevent binary issues**
 pip uninstall -y numpy simplejpeg picamera2 || true
 pip install --no-cache-dir numpy==2.1 simplejpeg picamera2
-
-# **Retry pip install on failure**
 retry_pip_install
 
 # Copy configuration files if they do not exist
