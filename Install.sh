@@ -39,17 +39,9 @@ chromium-browser --version
 chromedriver --version
 sox --version
 
-# Ensure we are in the correct directory
-if [ ! -d "src" ]; then
-    echo "Error: 'src' directory not found!"
-    exit 1
-fi
 cd src
-
-# Create and activate Python virtual environment
 python3 -m venv .venv --system-site-packages
 
-# Use correct method for activating venv in bash
 if [ -f ".venv/bin/activate" ]; then
     source .venv/bin/activate
 else
