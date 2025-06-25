@@ -1,6 +1,7 @@
 import os
 import subprocess
 
+# stop
 def stop_tars_ai():
     # Ensure DISPLAY is set for GUI applications
     display = os.getenv("DISPLAY", ":0")
