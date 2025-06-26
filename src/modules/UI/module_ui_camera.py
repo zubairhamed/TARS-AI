@@ -48,7 +48,7 @@ class CameraModule:
                 self.start_camera()
                 queue_message(f"INFO: Camera initialized successfully.")
             except Exception as e:
-                #print(f"❌ Camera initialization failed: {e}")
+                queue_message(f"❌ Camera initialization failed: {e}")
                 self.picam2 = None
 
     def start_camera(self):
@@ -69,7 +69,7 @@ class CameraModule:
 
     def restart_camera(self):
         """Restart the camera if it encounters an error."""
-        print("🔄 Restarting camera...")
+        queue_message("🔄 Restarting camera...")
         self.stop()
         time.sleep(2)  # Give time before reinitializing
 
@@ -77,7 +77,7 @@ class CameraModule:
             self.__init__(640, 480, self.use_camera_module)  # Reinitialize
             self.start_camera()
         except Exception as e:
-            print(f"❌ Camera restart failed: {e}")
+            queue_message(f"❌ Camera restart failed: {e}")
             self.running = False
 
     def update_size(self, width, height):
@@ -91,13 +91,12 @@ class CameraModule:
             self.picam2.configure(self.camera_config)
             self.start_camera()  # Restart camera with new resolution
         except Exception as e:
-            pass
-            #print(f"❌ Failed to update camera resolution: {e}")
+            queue_message(f"❌ Failed to update camera resolution: {e}")
 
     def capture_frames(self, target_fps=target_fps):
         """Continuously captures frames from the camera, limiting FPS to reduce CPU usage."""
         frame_delay = 1.0 / target_fps  # Calculate time to wait per frame
-        queue_message("🎥 Camera streaming started.")
+        queue_message("🎥 Camera capture_frames.")
         while self.running:
             start_time = time.time()  # Track frame start time
 
@@ -137,7 +136,7 @@ class CameraModule:
         with self.lock:
             if self.first_frame_captured:
                 self.save_next_frame = True
-                #print("🟢 Next frame will be saved.")
+                queue_message("🟢 Next frame will be saved.")
 
         while True:
             with self.lock:
@@ -150,7 +149,7 @@ class CameraModule:
     def save_frame(self):
         """Saves the current frame as an image."""
         if self.frame is None:
-            #print("⚠️ No frame available to save.")
+            queue_message("⚠️ No frame available to save.")
             return None
 
         frame_array = pygame.surfarray.array3d(self.frame)
@@ -163,7 +162,7 @@ class CameraModule:
         image_path = output_dir / f"capture_{timestamp}.jpg"
 
         cv2.imwrite(str(image_path), frame_array)
-        #print(f"📸 Image saved to {image_path}")
+        queue_message(f"📸 Image saved to {image_path}")
 
         return str(image_path)
 
@@ -178,4 +177,5 @@ class CameraModule:
             self.thread.join()
         if self.use_camera_module and self.picam2:
             self.picam2.stop()
-        #print("🛑 Camera stopped.")
+
+        queue_message("🛑 Camera stopped.")
