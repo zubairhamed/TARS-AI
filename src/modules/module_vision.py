@@ -58,24 +58,19 @@ def initialize_blip():
 def take_image_and_get_path(image_path="captured_image.jpg"):
     queue_message("Module::Vision :: take_image_and_get_path")
     try:
-        # Initialize the camera
-        picam2 = Picamera2()
+        with Picamera2() as picam2:
+            # Configure the camera for still capture
+            camera_config = picam2.create_still_configuration()
+            picam2.configure(camera_config)
 
-        # Configure the camera for still capture
-        camera_config = picam2.create_still_configuration()
-        picam2.configure(camera_config)
+            # Start the camera
+            picam2.start()
 
-        # Start the camera
-        picam2.start()
+            # Give the camera some time to adjust to lighting
+            time.sleep(2)
 
-        # Give the camera some time to adjust to lighting
-        time.sleep(2)
-
-        # Capture the image and save it to the specified path
-        picam2.capture_file(image_path)
-
-        # Stop the camera
-        picam2.stop()
+            # Capture the image and save it to the specified path
+            picam2.capture_file(image_path)
 
         queue_message(f"Image saved to: {image_path}")
         return image_path
