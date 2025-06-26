@@ -147,13 +147,16 @@ def send_image_to_server(image_path: str) -> str:
             response = model.generate_content(pil_image)
 
             if response and hasattr(response, 'text') and response.text:
+                queue_message("Gemini API call successful")
                 queue_message(response.text)
                 return response.text
             else:
+                queue_message("Gemini API call failed")
                 # Check for blocking reasons or other issues
                 feedback = ""
                 if response and hasattr(response, 'prompt_feedback'):
                     feedback = f" Details: {response.prompt_feedback}"
+                queue_message(feedback)
                 raise RuntimeError(f"Gemini API call failed to generate content.{feedback}")
     except Exception as e:
         import traceback
