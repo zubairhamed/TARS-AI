@@ -107,6 +107,7 @@ def describe_camera_view() -> str:
     try:
         image_path = capture_image()
         queue_message(image_path)
+        queue_message(CONFIG['VISION']['server_hosted'])
         if CONFIG['VISION']['server_hosted']:
             queue_message("send_image_to_server")
             return send_image_to_server(image_path)
