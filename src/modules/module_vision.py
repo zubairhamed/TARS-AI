@@ -33,7 +33,7 @@ def initialize_camera():
     if not CONFIG['VISION']['enabled']:
         global CAMERA
         if CAMERA is None:  # Ensure it's only created once
-            CAMERA = CameraModule(1920, 1080)
+            CAMERA = CameraModule(1920, 1080, message_queue)
             queue_message(f"INFO: Camera initialized.")
 
 def initialize_blip():
