@@ -161,6 +161,8 @@ def send_image_to_server(image_path: str) -> str:
                     feedback = f" Details: {response.prompt_feedback}"
                 raise RuntimeError(f"Gemini API call failed to generate content.{feedback}")
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         queue_message(f"[{datetime.now()}] ERROR: Failed to send image to server: {e}")
         raise
 
