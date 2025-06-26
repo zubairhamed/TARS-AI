@@ -107,9 +107,8 @@ def describe_camera_view() -> str:
     try:
         image_path = capture_image()
         queue_message(image_path)
-        queue_message("send_image_to_server")
         return send_image_to_server(image_path)
-        
+
         # if CONFIG['VISION']['server_hosted']:
         #     queue_message("send_image_to_server")
         #     return send_image_to_server(image_path)
@@ -139,19 +138,19 @@ def send_image_to_server(image_path: str) -> str:
     try:
         queue_message("send_image_to_server")
         with open(image_path, "rb") as img_file:
-            ## TODO -> Call Gemini
             gemini_api_key = CONFIG['VISION']['gemini_api_key']
             gemini_api_model = CONFIG['VISION']['gemini_api_model']
 
+            queue_message(gemini_api_key)
+            queue_message(gemini_api_model)
+           
             genai.configure(api_key=gemini_api_key)
-
-            img = Image.open(img_file)
-
             model = genai.GenerativeModel(gemini_api_model)
 
-            response = model.generate_content(img)
+            response = model.generate_content(img_file)
 
             if response and hasattr(response, 'text') and response.text:
+                queue_message(response.text)
                 return response.text
             else:
                 # Check for blocking reasons or other issues
