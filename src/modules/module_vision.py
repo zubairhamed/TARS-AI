@@ -12,6 +12,8 @@ from pathlib import Path
 from modules.module_config import load_config
 from modules.module_messageQue import queue_message
 from UI.module_ui_camera import CameraModule  # Import once, no reinitialization in function calls
+from picamera2 import Picamera2
+import time
 
 queue_message("Module::Vision")
 
@@ -51,21 +53,57 @@ def initialize_blip():
 
             queue_message(f"INFO: BLIP model initialized.")
 
+def take_image_and_get_path(image_path="captured_image.jpg"):
+  """
+  Initializes the camera, captures a single image, saves it to a specified path,
+  and returns the path.
+
+  Args:
+    image_path: The path where the image will be saved. Defaults to "captured_image.jpg".
+
+  Returns:
+    The path to the captured image.
+  """
+  # Initialize the camera
+  picam2 = Picamera2()
+
+  # Configure the camera for still capture
+  camera_config = picam2.create_still_configuration()
+  picam2.configure(camera_config)
+
+  # Start the camera
+  picam2.start()
+
+  # Give the camera some time to adjust to lighting
+  time.sleep(2)
+
+  # Capture the image and save it to the specified path
+  picam2.capture_file(image_path)
+
+  # Stop the camera
+  picam2.stop()
+
+  print(f"Image saved to: {image_path}")
+  return image_path
+
 def capture_image() -> str:
-    """Capture an image from the camera instance and return the saved image path."""
-    try:
-        from UI.module_ui_camera import CameraModule
+    return take_image_and_get_path()
 
-        queue_message("Module::Vision :: capture_image")
-        camera = CameraModule(1920, 1080)
-        image_path = camera.capture_single_image()
-        queue_message(f"✅ Image saved: {image_path}")
-        #camera.stop()
-        return image_path
+# def capture_image() -> str:
+#     """Capture an image from the camera instance and return the saved image path."""
+#     try:
+#         from UI.module_ui_camera import CameraModule
 
-    except Exception as e:
-        queue_message(f"ERROR: {e}")
-        raise RuntimeError(f"Error capturing image: {e}")
+#         queue_message("Module::Vision :: capture_image")
+#         camera = CameraModule(1920, 1080)
+#         image_path = camera.capture_single_image()
+#         queue_message(f"✅ Image saved: {image_path}")
+#         #camera.stop()
+#         return image_path
+
+#     except Exception as e:
+#         queue_message(f"ERROR: {e}")
+#         raise RuntimeError(f"Error capturing image: {e}")
 
 def describe_camera_view() -> str:
     """Capture an image and process it for captioning."""

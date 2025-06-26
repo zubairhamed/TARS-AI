@@ -98,6 +98,7 @@ class CameraModule:
         frame_delay = 1.0 / target_fps  # Calculate time to wait per frame
         queue_message("🎥 Camera capture_frames.")
         while self.running:
+            queue_message("🎥 Camera capture_frames in while loop")
             start_time = time.time()  # Track frame start time
 
             try:
@@ -126,6 +127,7 @@ class CameraModule:
                 self.restart_camera()  # Attempt restart on error
 
             # ⏳ **Limit FPS**
+            queue_message("⏳ Limiting FPS.")
             elapsed_time = time.time() - start_time  # Calculate time taken for processing
             sleep_time = max(0, frame_delay - elapsed_time)  # Ensure positive sleep time
             time.sleep(sleep_time)
