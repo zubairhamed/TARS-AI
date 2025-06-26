@@ -107,18 +107,20 @@ def describe_camera_view() -> str:
     try:
         image_path = capture_image()
         queue_message(image_path)
-        queue_message(CONFIG['VISION']['server_hosted'])
-        if CONFIG['VISION']['server_hosted']:
-            queue_message("send_image_to_server")
-            return send_image_to_server(image_path)
-        else:
-            queue_message("Using local BLIP model")
-            image = Image.open(image_path)
-            inputs = PROCESSOR(image, return_tensors="pt").to(DEVICE)
-            outputs = MODEL.generate(**inputs, max_new_tokens=50, num_beams=2)
-            output = PROCESSOR.decode(outputs[0], skip_special_tokens=True)
-            queue_message(output)
-            return output
+        queue_message("send_image_to_server")
+        return send_image_to_server(image_path)
+        
+        # if CONFIG['VISION']['server_hosted']:
+        #     queue_message("send_image_to_server")
+        #     return send_image_to_server(image_path)
+        # else:
+        #     queue_message("Using local BLIP model")
+        #     image = Image.open(image_path)
+        #     inputs = PROCESSOR(image, return_tensors="pt").to(DEVICE)
+        #     outputs = MODEL.generate(**inputs, max_new_tokens=50, num_beams=2)
+        #     output = PROCESSOR.decode(outputs[0], skip_special_tokens=True)
+        #     queue_message(output)
+        #     return output
         
     except Exception as e:
         queue_message(f"TARS is unable to see right now {e}")
