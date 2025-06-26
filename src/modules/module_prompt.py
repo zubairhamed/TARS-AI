@@ -33,7 +33,6 @@ def build_prompt(user_prompt, character_manager, memory_manager, config, debug=F
     persona_traits = "\n".join(
         [f"- {trait}: {value}" for trait, value in character_manager.traits.items()]
     )
-
     
     # Build the base prompt
     base_prompt = (
@@ -54,8 +53,7 @@ def build_prompt(user_prompt, character_manager, memory_manager, config, debug=F
 
     final_prompt = inject_dynamic_values(final_prompt, user_name, char_name)
 
-    if debug:
-        queue_message(f"DEBUG PROMPT:\n{final_prompt}")
+    queue_message(f"DEBUG PROMPT:\n{final_prompt}")
 
     return clean_text(final_prompt)
 
