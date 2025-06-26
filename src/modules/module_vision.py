@@ -115,7 +115,7 @@ def describe_camera_view() -> str:
             return output
         
     except Exception as e:
-        queue_message(f"TARS is unable to see right now")
+        queue_message(f"TARS is unable to see right now {e}")
         return f"Error: {e}"
 
 def send_image_to_server(image_path: str) -> str:
