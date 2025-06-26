@@ -87,7 +87,7 @@ def take_image_and_get_path(image_path="captured_image.jpg"):
   return image_path
 
 def capture_image() -> str:
-    return take_image_and_get_path()
+    return take_image_and_get_path
 
 # def capture_image() -> str:
 #     """Capture an image from the camera instance and return the saved image path."""
