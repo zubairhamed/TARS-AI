@@ -725,7 +725,8 @@ class STTManager:
                         break
 
         except Exception as e:
-            queue_message(f"ERROR: Wake word detection failed: {e}")
+            pass
+            # queue_message(f"ERROR: Wake word detection failed: {e}")
 
         return False
 
@@ -772,7 +773,7 @@ class STTManager:
                     return True
                     
         except Exception as e:
-            queue_message(f"ERROR: Wake word detection failed: {e}")
+            # queue_message(f"ERROR: Wake word detection failed: {e}")
             return False
         # finally:
         #     try:
