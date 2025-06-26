@@ -147,7 +147,7 @@ def send_image_to_server(image_path: str) -> str:
             genai.configure(api_key=gemini_api_key)
             model = genai.GenerativeModel(gemini_api_model)
 
-            image_stream = BytesIO(img_file)
+            image_stream = BytesIO(img_file.read())
             pil_image = Image.open(image_stream)
             response = model.generate_content(pil_image)
 
