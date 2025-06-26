@@ -20,7 +20,7 @@ class CameraModule:
             cls._instance._initialized = False  # Prevent multiple inits
         return cls._instance
 
-    def __init__(self, width, height, use_camera_module=True):
+    def __init__(self, width, height, use_camera_module=True, queue):
         if self._initialized:
             return  # ✅ Prevent multiple inits
         self._initialized = True
