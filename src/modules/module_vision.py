@@ -13,6 +13,8 @@ from modules.module_config import load_config
 from modules.module_messageQue import queue_message
 from UI.module_ui_camera import CameraModule  # Import once, no reinitialization in function calls
 
+queue_message("Module::Vision")
+
 # === Constants and Globals ===
 CONFIG = load_config()
 
@@ -54,9 +56,10 @@ def capture_image() -> str:
     try:
         from UI.module_ui_camera import CameraModule
 
+        queue_message("Module::Vision :: capture_image")
         camera = CameraModule(1920, 1080)
         image_path = camera.capture_single_image()
-        print(f"✅ Image saved: {image_path}")
+        queue_message(f"✅ Image saved: {image_path}")
         #camera.stop()
         return image_path
 

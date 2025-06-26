@@ -61,12 +61,11 @@ class CameraModule:
             self.picam2.start()
             self.thread = threading.Thread(target=self.capture_frames, daemon=True)
             self.thread.start()
-            print("🎥 Camera streaming started.")
+            queue_message("🎥 Camera streaming started.")
         except Exception as e:
-            print(f"❌ Failed to start camera: {e}")
+            queue_message(f"❌ Failed to start camera: {e}")
             self.running = False
             self.picam2 = None  # Reset camera instance
-
 
     def restart_camera(self):
         """Restart the camera if it encounters an error."""
@@ -98,7 +97,7 @@ class CameraModule:
     def capture_frames(self, target_fps=target_fps):
         """Continuously captures frames from the camera, limiting FPS to reduce CPU usage."""
         frame_delay = 1.0 / target_fps  # Calculate time to wait per frame
-
+        queue_message("🎥 Camera streaming started.")
         while self.running:
             start_time = time.time()  # Track frame start time
 
