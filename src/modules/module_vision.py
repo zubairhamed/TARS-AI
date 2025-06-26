@@ -56,6 +56,7 @@ def initialize_blip():
             queue_message(f"INFO: BLIP model initialized.")
 
 def take_image_and_get_path(image_path="captured_image.jpg"):
+    queue_message("Module::Vision :: take_image_and_get_path")
     try:
         # Initialize the camera
         picam2 = Picamera2()
