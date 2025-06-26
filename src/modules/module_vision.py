@@ -6,6 +6,8 @@ import requests
 import torch
 import base64
 from datetime import datetime
+import pathlib
+import google.generativeai as genai
 from pathlib import Path
 
 # === Custom Modules ===
@@ -133,15 +135,26 @@ def send_image_to_server(image_path: str) -> str:
     try:
         queue_message("send_image_to_server")
         with open(image_path, "rb") as img_file:
-            files = {'image': ('image.jpg', img_file, 'image/jpeg')}
+            ## TODO -> Call Gemini
+            gemini_api_key = CONFIG['VISION']['gemini_api_key']
+            gemini_api_model = CONFIG['VISION']['gemini_api_model']
 
-            response = requests.post(f"{CONFIG['VISION']['base_url']}/caption", files=files)
-            queue_message(response)
-            if response.status_code == 200:
-                return response.json().get("caption", "No caption returned")
+            genai.configure(api_key=gemini_api_key)
+
+            img = Image.open(img_file)
+
+            model = genai.GenerativeModel(gemini_api_model)
+
+            response = model.generate_content(img)
+
+            if response and hasattr(response, 'text') and response.text:
+                return response.text
             else:
-                error_message = response.json().get('error', 'Unknown error')
-                raise RuntimeError(f"Server error ({response.status_code}): {error_message}")
+                # Check for blocking reasons or other issues
+                feedback = ""
+                if response and hasattr(response, 'prompt_feedback'):
+                    feedback = f" Details: {response.prompt_feedback}"
+                raise RuntimeError(f"Gemini API call failed to generate content.{feedback}")
     except Exception as e:
         queue_message(f"[{datetime.now()}] ERROR: Failed to send image to server: {e}")
         raise

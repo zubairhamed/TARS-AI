@@ -192,6 +192,8 @@ def load_config():
             "enabled": config.getboolean('VISION', 'enabled'),
             "server_hosted": config.getboolean('VISION', 'server_hosted'),
             "base_url": config['VISION']['base_url'],
+            "gemini_api_key": os.getenv('GEMINI_API_KEY'),
+            "gemini_api_model": os.getenv('GEMINI_API_MODEL')
         },
         "EMOTION": {
             "enabled": config.getboolean('EMOTION', 'enabled'),
