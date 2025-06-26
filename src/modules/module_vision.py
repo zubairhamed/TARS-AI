@@ -54,40 +54,34 @@ def initialize_blip():
             queue_message(f"INFO: BLIP model initialized.")
 
 def take_image_and_get_path(image_path="captured_image.jpg"):
-  """
-  Initializes the camera, captures a single image, saves it to a specified path,
-  and returns the path.
+    try:
+        # Initialize the camera
+        picam2 = Picamera2()
 
-  Args:
-    image_path: The path where the image will be saved. Defaults to "captured_image.jpg".
+        # Configure the camera for still capture
+        camera_config = picam2.create_still_configuration()
+        picam2.configure(camera_config)
 
-  Returns:
-    The path to the captured image.
-  """
-  # Initialize the camera
-  picam2 = Picamera2()
+        # Start the camera
+        picam2.start()
 
-  # Configure the camera for still capture
-  camera_config = picam2.create_still_configuration()
-  picam2.configure(camera_config)
+        # Give the camera some time to adjust to lighting
+        time.sleep(2)
 
-  # Start the camera
-  picam2.start()
+        # Capture the image and save it to the specified path
+        picam2.capture_file(image_path)
 
-  # Give the camera some time to adjust to lighting
-  time.sleep(2)
+        # Stop the camera
+        picam2.stop()
 
-  # Capture the image and save it to the specified path
-  picam2.capture_file(image_path)
-
-  # Stop the camera
-  picam2.stop()
-
-  print(f"Image saved to: {image_path}")
-  return image_path
+        print(f"Image saved to: {image_path}")
+        return image_path
+    except Exception as e:
+        queue_message(f"ERROR: {e}")
+        raise RuntimeError(f"Error capturing image: {e}")  
 
 def capture_image() -> str:
-    return take_image_and_get_path
+    return take_image_and_get_path()
 
 # def capture_image() -> str:
 #     """Capture an image from the camera instance and return the saved image path."""
