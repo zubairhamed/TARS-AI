@@ -147,7 +147,9 @@ def send_image_to_server(image_path: str) -> str:
             genai.configure(api_key=gemini_api_key)
             model = genai.GenerativeModel(gemini_api_model)
 
-            response = model.generate_content(img_file)
+            image_stream = io.BytesIO(img_file)
+            pil_image = Image.open(image_stream)
+            response = model.generate_content(pil_image)
 
             if response and hasattr(response, 'text') and response.text:
                 queue_message(response.text)
