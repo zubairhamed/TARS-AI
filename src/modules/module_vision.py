@@ -16,7 +16,7 @@ from modules.module_messageQue import queue_message
 from UI.module_ui_camera import CameraModule  # Import once, no reinitialization in function calls
 from picamera2 import Picamera2
 import time
-from google.generativeai import types
+from google.generativeai.types import Part
 
 queue_message("Module::Vision")
 
@@ -143,7 +143,7 @@ def send_image_to_server(image_path: str) -> str:
             genai.configure(api_key=gemini_api_key)
             model = genai.GenerativeModel(gemini_api_model)
             
-            pil_image = types.Part.from_bytes(data=img_file, mime_type="image/jpeg")
+            pil_image = Part.from_data(data=img_file.read(), mime_type="image/jpeg")
             response = model.generate_content(contents=[
                 "Describe this image",
                 pil_image,
