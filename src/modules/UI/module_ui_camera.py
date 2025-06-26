@@ -6,6 +6,7 @@ from datetime import datetime
 from pathlib import Path
 import time
 from module_config import load_config
+from modules.module_messageQue import queue_message
 
 CONFIG = load_config()
 target_fps = CONFIG['UI']['target_fps']
@@ -20,7 +21,7 @@ class CameraModule:
             cls._instance._initialized = False  # Prevent multiple inits
         return cls._instance
 
-    def __init__(self, width, height, use_camera_module=True, queue):
+    def __init__(self, width, height, use_camera_module=True):
         if self._initialized:
             return  # ✅ Prevent multiple inits
         self._initialized = True
@@ -45,7 +46,7 @@ class CameraModule:
 
                 self.thread = None
                 self.start_camera()
-                #print("🎥 Camera initialized successfully.")
+                queue_message(f"INFO: Camera initialized successfully.")
             except Exception as e:
                 #print(f"❌ Camera initialization failed: {e}")
                 self.picam2 = None
