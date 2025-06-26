@@ -144,7 +144,10 @@ def send_image_to_server(image_path: str) -> str:
 
             image_stream = BytesIO(img_file.read())
             pil_image = Image.open(image_stream)
-            response = model.generate_content(pil_image)
+            response = model.generate_content(contents=[
+                "Describe this image",
+                pil_image,
+            ])
 
             if response and hasattr(response, 'text') and response.text:
                 queue_message("Gemini API call successful")
