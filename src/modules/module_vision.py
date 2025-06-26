@@ -74,7 +74,7 @@ def take_image_and_get_path(image_path="captured_image.jpg"):
         # Stop the camera
         picam2.stop()
 
-        print(f"Image saved to: {image_path}")
+        queue_message(f"Image saved to: {image_path}")
         return image_path
     except Exception as e:
         queue_message(f"ERROR: {e}")
@@ -103,15 +103,17 @@ def describe_camera_view() -> str:
     """Capture an image and process it for captioning."""
     try:
         image_path = capture_image()
-        print(image_path)
+        queue_message(image_path)
         if CONFIG['VISION']['server_hosted']:
+            queue_message("send_image_to_server")
             return send_image_to_server(image_path)
         else:
+            queue_message("Using local BLIP model")
             image = Image.open(image_path)
             inputs = PROCESSOR(image, return_tensors="pt").to(DEVICE)
             outputs = MODEL.generate(**inputs, max_new_tokens=50, num_beams=2)
             output = PROCESSOR.decode(outputs[0], skip_special_tokens=True)
-            print(output)
+            queue_message(output)
             return output
         
     except Exception as e:
@@ -129,11 +131,12 @@ def send_image_to_server(image_path: str) -> str:
     - str: Generated caption from the server.
     """
     try:
+        queue_message("send_image_to_server")
         with open(image_path, "rb") as img_file:
             files = {'image': ('image.jpg', img_file, 'image/jpeg')}
 
             response = requests.post(f"{CONFIG['VISION']['base_url']}/caption", files=files)
-
+            queue_message(response)
             if response.status_code == 200:
                 return response.json().get("caption", "No caption returned")
             else:
