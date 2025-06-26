@@ -34,7 +34,8 @@ import modules.module_chatui
 
 import logging  # This will hide INFO and DEBUG messages
 logging.basicConfig(level=logging.DEBUG)  # This will hide INFO and DEBUG messages
-logging.getLogger('bm25s').setLevel(logging.DEBUG)
+logging.getLogger('bm25s').setLevel(logging.WARNING)
+logging.getLogger('picamera2').setLevel(logging.WARNING)
 
 # === Constants and Globals ===
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
